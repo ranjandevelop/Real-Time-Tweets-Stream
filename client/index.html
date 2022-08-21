@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="#" type="image/x-icon" />
+    <!-- Bootstrap icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
+    />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Live Tweets</title>
+  </head>
+  <body class="bg-dark">
+    <nav class="navbar bg-primary text-light">
+      <h1>Twitter Stream API</h1>
+    </nav>
+    <div class="container">
+      <div id="tweetStream">
+        <!-- <div class="card my-3">
+          <div class="card-body">
+            <p class="card-text">
+              With supporting text below as a natural lead-in to additional
+              content. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+              Doloribus, cumque.
+            </p>
+            <p class="card-text small text-muted">@With</p>
+            <a href="#" class="btn btn-primary">
+              <i class="bi bi-twitter"></i> Go Twitter</a
+            >
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"
+      integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      const tweetStream = document.querySelector("#tweetStream");
+      const socket = io();
+      // Connecting client to server
+      socket.on("connect", () => {
+        console.log("Connected to Server...");
+      });
+      socket.on("tweet", (tweet) => {
+        // console.log(tweet);
+        const tweetData = {
+          id: tweet.data.id,
+          text: tweet.data.text,
+          username: `@${tweet.includes.users[0].username}`,
+        };
+        // console.log(tweetData);
+
+        // Create Element and insert Tweets Data
+        const tweetEl = document.createElement("div");
+        tweetEl.className = "card-my-3 bg-light my-3 me-1";
+        tweetEl.innerHTML = `
+          <div class="card-body">
+                <p class="card-text">${tweetData.text}</p>
+                <p class="card-text small text-muted">${tweetData.username}</p>
+                <a href="https://twitter.com/${tweetData.username}/status/${tweetData.id}" class="btn btn-primary">
+                  <i class="bi bi-twitter"></i> Go Twitter</a
+                >
+              </div>
+        `;
+
+        tweetStream.appendChild(tweetEl);
+
+        setTimeout(() => tweetEl.remove(), 5000);
+      });
+    </script>
+  </body>
+</html>
